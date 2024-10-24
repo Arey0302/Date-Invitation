@@ -133,7 +133,7 @@ const Date = () => {
                 }}
               />
               <h1 style={{ color: pink }} className="py-3">
-                Rate how exited are you
+              Rate your happiness level 
               </h1>
             </div>
             <HeartSlider></HeartSlider>
