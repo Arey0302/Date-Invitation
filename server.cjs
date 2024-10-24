@@ -26,6 +26,10 @@ db.connect(err => {
     console.log('Connected to MySQL');
 });
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the Date App API!');
+});
+
 app.post('/save-date-time', (req, res) => {
     const { date, time, food } = req.body;
 
