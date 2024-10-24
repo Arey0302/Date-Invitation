@@ -27,23 +27,24 @@ const Question = () => {
     setDateTime((prev) => ({ ...prev, time }));
   };
 
-  const nextQuestion = () => {
+  const nextQuestion = async () => {
     if (dateTime.date && dateTime.time) {
       const combinedDateTime = dayjs(dateTime.date)
         .hour(dateTime.time.hour())
         .minute(dateTime.time.minute());
-      const formattedDate = combinedDateTime.format("YYYY-MM-DD");
+      const formattedDate = combinedDateTime.format("DD-MM-YYYY");
       const formattedTime = combinedDateTime.format("HH:mm");
 
       console.log("dateTime:", {
         date: formattedDate,
         time: formattedTime,
-      });
+      });     
       localStorage.setItem(
         "dateTime",
         JSON.stringify({ date: formattedDate, time: formattedTime })
       );
-      navigate("/choose");
+        navigate("/choose");
+
     } else {
       toast.success("Please select both date and time. (╥_╥)", {
         style: {

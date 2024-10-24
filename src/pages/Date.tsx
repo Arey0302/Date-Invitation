@@ -8,18 +8,12 @@ import food4 from "../assets/img/food/food4.jpg";
 import food5 from "../assets/img/food/food5.jpg";
 import food6 from "../assets/img/food/food6.jpg";
 
-// import mov1 from "../assets/img/movies/img1.jpg";
-// import mov2 from "../assets/img/movies/img2.jpg";
-// import mov3 from "../assets/img/movies/img3.jpg";
-// import mov4 from "../assets/img/movies/img4.jpg";
-// import mov5 from "../assets/img/movies/img5.jpg";
-// import mov6 from "../assets/img/movies/img6.jpg";
-
 import img1 from "../assets/img/cat-jump.gif";
 import HeartButton from "../components/HeartButton/HeartButton";
 import { pink } from "../components/interfaces/HeartButton.interface";
 import HeartSlider from "../components/Heart/Heart";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const Date = () => {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
@@ -42,24 +36,44 @@ const Date = () => {
     switch (selectedCategory) {
       case "food":
         return "What do you want to eat ?";
-      // case "movie":
-      //   return "What movie do you want to watch ?";
       default:
     }
   };
 
-  const nextQuestion = () => {
-    if (selectedCategory === "rate") {
-      navigate("/thankyou");
-    } else {
-      if (selectedCategory === "movie") {
-        setSelectedCategory("rate");
-      } else {
-        setSelectedCategory("movie");
+  const nextQuestion = async () => {
+
+    const savedDateTime = localStorage.getItem("dateTime");
+  
+    if (selectedCards.length > 0 && savedDateTime) {
+      const parsedDateTime = JSON.parse(savedDateTime); 
+  
+      const selectedFoods = selectedCards
+        .map(index => foodData[index].title) 
+        .join(", ");
+  
+      try {
+        await fetch("http://localhost:5000/save-date-time", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            date: parsedDateTime.date,
+            time: parsedDateTime.time,
+            food: selectedFoods, 
+          }),
+        });
+  
+        navigate("/thankyou");
+      } catch (error) {
+        console.error("Error saving date and time:", error);
+        toast.error("Error saving data. Please try again later.");
       }
+    } else {
+      toast.error("Please seclect at least one food.");
     }
-    setSelectedCards([]);
   };
+  
 
   const foodData = [
     {
@@ -88,32 +102,6 @@ const Date = () => {
     },
   ];
 
-  // const movieData = [
-  //   {
-  //     title: "Beetlejuice Beetlejuice",
-  //     image: mov1,
-  //   },
-  //   {
-  //     title: "Dul Muluk Dul Malik",
-  //     image: mov2,
-  //   },
-  //   {
-  //     title: "Hellboy: The Crooked Man",
-  //     image: mov3,
-  //   },
-  //   {
-  //     title: "Never Let Go",
-  //     image: mov4,
-  //   },
-  //   {
-  //     title: "Transformers One",
-  //     image: mov5,
-  //   },
-  //   {
-  //     title: "Deadpool & Wolverine",
-  //     image: mov6,
-  //   },
-  // ];
 
   return (
     <Layout>
@@ -130,17 +118,7 @@ const Date = () => {
               />
             </div>
           ))}
-        {/* {selectedCategory === "movie" &&
-          movieData.map((card, index) => (
-            <div key={index} className="m-2">
-              <CardComponent
-                title={card.title}
-                image={card.image}
-                isSelected={selectedCards.includes(index)}
-                onClick={() => handleCardClick(index)}
-              />
-            </div>
-          ))} */}
+       
         {selectedCategory === "rate" && (
           <>
             <div className="d-flex flex-column justify-content-center">
