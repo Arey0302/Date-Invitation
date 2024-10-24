@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 
 const Date = () => {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+  const [selectedCategory] = useState<string | null>(
     "food"
   );
   const navigate = useNavigate();
