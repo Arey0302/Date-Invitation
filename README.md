@@ -6,7 +6,7 @@ Date Invitation là một dự án web giúp bạn tạo lời mời hẹn hò d
 - Chọn ngày và giờ hẹn
 - Chọn món ăn yêu thích
 - Đánh giá mức độ hạnh phúc
-- Gửi thông tin lựa chọn đến email adminadmin
+- Gửi thông tin lựa chọn đến email admin
 
 ## Công nghệ sử dụng
 - **Frontend:** React + Vite
@@ -25,11 +25,6 @@ Date-Invitation/
 ├── README.md            # Giới thiệu dự án
 ...
 ```
-
-## Hướng dẫn deploy
-- **Backend:** Deploy lên Render, Railway, Cyclic... (chạy file `server.cjs`)
-- **Frontend:** Deploy lên Vercel, Netlify... (thư mục `src/` và `public/`)
-- Sửa URL API trong frontend để trỏ về backend đã deploy.
 
 ## Lưu ý
 - Không up file `.env` chứa thông tin nhạy cảm lên GitHub.
