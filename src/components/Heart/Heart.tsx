@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import "./HeartSlider.css"; // Import your CSS file for styles
 
 const HeartSlider = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {

@@ -7,7 +7,8 @@ import food3 from "../assets/img/food/food3.jpg";
 import food4 from "../assets/img/food/food4.jpg";
 import food5 from "../assets/img/food/food5.jpg";
 import food6 from "../assets/img/food/food6.jpg";
-
+import dokki from "../assets/img/food/dokki.jpg";
+import Chicken from "../assets/img/food/Chicken.jpg";
 import img1 from "../assets/img/cat-jump.gif";
 import HeartButton from "../components/HeartButton/HeartButton";
 import { pink } from "../components/interfaces/HeartButton.interface";
@@ -127,6 +128,14 @@ const Date = () => {
     {
       title: "Pizza",
       image: food6,
+    },
+    {
+      title: "Dookki",
+      image: dokki,
+    },
+    {
+      title: "Chicken",
+      image: Chicken,
     },
   ];
 
