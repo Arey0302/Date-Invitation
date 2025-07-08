@@ -26,8 +26,13 @@ Date-Invitation/
 ...
 ```
 
+## Hướng dẫn deploy
+- Deploy lên Vercel, Netlify... (thư mục `src/` và `public/`)
+- Sửa URL API trong frontend để trỏ về backend đã deploy.
+
 ## Lưu ý
 - Không up file `.env` chứa thông tin nhạy cảm lên GitHub.
 - Đảm bảo backend bật CORS nếu frontend và backend khác domain.
 
 Chúc bạn có những buổi hẹn hò vui vẻ! ❤️
+
