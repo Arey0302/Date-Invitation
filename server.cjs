@@ -1,8 +1,9 @@
-// server.cjs
 const express = require('express');
-const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
 const app = express();
 const PORT = 5000;
 
@@ -10,36 +11,34 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const db = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root', 
-    password: 'Thuy16032022*',
-    database: 'Date',
-    port: 3306
-});
-
-db.connect(err => {
-    if (err) {
-        console.error('Could not connect to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL');
+// Hàm gửi email
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  }
 });
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the Date App API!');
+    res.send('Server is running!');
 });
 
-app.post('/save-date-time', (req, res) => {
-    const { date, time, food } = req.body;
-
-    const sql = 'INSERT INTO user_data (date, time, food) VALUES (?, ?, ?)';
-    db.query(sql, [date, time, food], (err, result) => {
-        if (err) {
-            console.error('Error saving data:', err);
-            return res.status(500).send('Error saving data');
-        }
-        res.status(200).send('Data saved successfully');
+app.post('/notify-admin', (req, res) => {
+    const { date, food, happiness } = req.body;
+    const message = `Món ăn đã chọn: ${food}\nThời gian: ${date}\nMức độ hạnh phúc: ${happiness}/100`;
+    transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: process.env.ADMIN_EMAIL,
+      subject: 'Thông báo lựa chọn từ user',
+      text: message
+    })
+    .then(() => {
+        res.status(200).send('Đã gửi email!');
+    })
+    .catch((error) => {
+        console.error('Lỗi gửi email:', error);
+        res.status(500).send('Có lỗi khi gửi email.');
     });
 });
 

@@ -1,15 +1,14 @@
 import { useState, useRef } from "react";
 import "./HeartSlider.css"; // Import your CSS file for styles
 
-const HeartSlider = () => {
-  const [value, setValue] = useState(0);
+const HeartSlider = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animations = ["float-1", "float-2", "float-3", "float-4"];
   const animationDuration = 2000;
 
   const handleInput = (e: any) => {
-    const newValue = e.target.value;
-    setValue(newValue);
+    const newValue = Number(e.target.value);
+    onChange(newValue);
 
     const randomAnimation =
       animations[Math.floor(Math.random() * animations.length)];

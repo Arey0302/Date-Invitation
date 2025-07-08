@@ -12,14 +12,23 @@ import img1 from "../assets/img/cat-jump.gif";
 import HeartButton from "../components/HeartButton/HeartButton";
 import { pink } from "../components/interfaces/HeartButton.interface";
 import HeartSlider from "../components/Heart/Heart";
-import { useNavigate } from "react-router";
-import toast from "react-hot-toast";
+import { useNavigate, useLocation } from "react-router";
 
 const Date = () => {
+  const location = useLocation();
+  let selectedDate = "";
+  let selectedTime = "";
+  if (location.state && location.state.selectedDate && location.state.selectedTime) {
+    selectedDate = location.state.selectedDate;
+    selectedTime = location.state.selectedTime;
+  } else {
+    const dateTime = JSON.parse(localStorage.getItem("dateTime") || "{}");
+    selectedDate = dateTime.date || "";
+    selectedTime = dateTime.time || "";
+  }
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [selectedCategory] = useState<string | null>(
-    "food"
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string>("food");
+  const [happiness, setHappiness] = useState(50);
   const navigate = useNavigate();
 
   const handleCardClick = (index: number) => {
@@ -36,45 +45,64 @@ const Date = () => {
     switch (selectedCategory) {
       case "food":
         return "What do you want to eat ?";
+      case "time":
+        return "When are you free ?";
+      case "rate":
+        return "Rate your happiness level";
       default:
     }
   };
 
-  const nextQuestion = async () => {
-
-    const savedDateTime = localStorage.getItem("dateTime");
-  
-    if (selectedCards.length > 0 && savedDateTime) {
-      const parsedDateTime = JSON.parse(savedDateTime); 
-  
-      const selectedFoods = selectedCards
-        .map(index => foodData[index].title) 
-        .join(", ");
-  
-      try {
-        await fetch("http://localhost:5000/save-date-time", {
+  const showAlertWithChoices = async () => {
+    if (!selectedDate || !selectedTime) {
+      alert("Thiếu thông tin ngày hoặc giờ!");
+      return;
+    }
+    const chosenFoods = selectedCards.map((index: number) => foodData[index].title).join(", ");
+    const dateTime = `${selectedDate} ${selectedTime}`;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/notify-admin`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            date: parsedDateTime.date,
-            time: parsedDateTime.time,
-            food: selectedFoods, 
-          }),
+          body: JSON.stringify({ date: dateTime, food: chosenFoods, happiness }),
         });
-  
-        navigate("/thankyou");
-      } catch (error) {
-        console.error("Error saving date and time:", error);
-        toast.error("Error saving data. Please try again later.");
+      if (response.ok) {
+        alert("Notification sent to mail!");
+      } else {
+        alert("Error sending message to mail!.");
       }
-    } else {
-      toast.error("Please seclect at least one food.");
+    } catch (error) {
+      alert("Have error when sent notification.");
     }
   };
   
-
+  const nextQuestion = () => {
+    if (selectedCategory === "time") {
+      if (!selectedDate || !selectedTime) {
+        alert("Bạn phải chọn ngày và giờ!");
+        return;
+      }
+      setSelectedCategory("food");
+      return;
+    }
+    if (selectedCategory === "food") {
+      if (selectedCards.length === 0) {
+        alert("Bạn phải chọn ít nhất một món ăn!");
+        return;
+      }
+      setSelectedCategory("rate");
+      return;
+    }
+    if (selectedCategory === "rate") {
+      showAlertWithChoices();
+      navigate("/thankyou");
+    }
+  };
+  
   const foodData = [
     {
       title: "Pancake",
@@ -118,7 +146,6 @@ const Date = () => {
               />
             </div>
           ))}
-       
         {selectedCategory === "rate" && (
           <>
             <div className="d-flex flex-column justify-content-center">
@@ -136,7 +163,7 @@ const Date = () => {
               Rate your happiness level 
               </h1>
             </div>
-            <HeartSlider></HeartSlider>
+            <HeartSlider value={happiness} onChange={setHappiness} />
           </>
         )}
       </main>
