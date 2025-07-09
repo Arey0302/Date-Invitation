@@ -61,9 +61,10 @@ const Date = () => {
     }
     const chosenFoods = selectedCards.map((index: number) => foodData[index].title).join(", ");
     const dateTime = `${selectedDate} ${selectedTime}`;
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     try {
       const response = await fetch(
-        `http://localhost:5000/notify-admin`,
+        `${API_URL}/notify-admin`,
         {
           method: "POST",
           headers: {
